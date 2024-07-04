@@ -9,4 +9,3 @@
     <a href="{{ url('/') }}">Upload another image</a>
 </body>
 </html>
-git init
