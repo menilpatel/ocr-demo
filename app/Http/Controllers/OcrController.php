@@ -21,4 +21,30 @@ class OcrController extends Controller
         $text = $ocr->run();
 
         return view('result', compact('text'));
-    }}
+    }
+
+    public function extractTextFromPdf(Request $request)
+    {
+        $request->validate([
+            'pdf' => 'required|mimes:pdf|max:10000',
+        ]);
+
+        $pdfPath = $request->file('pdf')->store('pdfs');
+
+        $pdf = new Pdf(storage_path('app/' . $pdfPath));
+        $totalPages = $pdf->getNumberOfPages();
+        $text = '';
+
+        for ($i = 1; $i <= $totalPages; $i++) {
+            $imagePath = storage_path('app/pdf_page_' . $i . '.jpg');
+            $pdf->setPage($i)->saveImage($imagePath);
+
+            $ocr = new TesseractOCR($imagePath);
+            $text .= $ocr->run() . "\n";
+        }
+
+        return response()->json([
+            'text' => $text,
+        ]);
+    }
+}

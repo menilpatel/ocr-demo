@@ -9,4 +9,5 @@ Route::get('/', function () {
 });
 
 Route::post('/upload', [OcrController::class, 'processImage'])->name('upload');
+Route::post('/extract-text', [OcrController::class, 'extractTextFromPdf']);
 Route::post('/detect-text', [ImageController::class, 'detectText']);
